@@ -8,6 +8,6 @@ names: ['nestle_milo_tin', 'twinings_greentea_box', 'woolworths_salt_bottle']
 roboflow:
   workspace: savorvision-v0kkr
   project: savor_vision_mvp-wixon
-  version: 2
-  license: Private
-  url: https://app.roboflow.com/savorvision-v0kkr/savor_vision_mvp-wixon/2
+  version: 3
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/savorvision-v0kkr/savor_vision_mvp-wixon/dataset/3
