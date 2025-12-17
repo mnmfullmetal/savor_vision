@@ -1,14 +1,17 @@
 from ultralytics import YOLO
+from utils import find_model_path()
+import os
 import cv2
 
-model = YOLO(r"C:\Users\Myles\source\repos\savor_vision\Savor_training\mvp_run_22\weights\best.pt")
+model_path = find_model_path()
+model = YOLO(model_path)
 
 cap = cv2.VideoCapture(0)
 
 if not cap.isOpened():
     exit()
 
-print("Status: Camera Active. Press Q to stop camera and predictions")
+print("Status: Camera Active. Press Q to quit and exit.")
 
 while True:
     success, frame = cap.read()

@@ -1,14 +1,9 @@
 from ultralytics import YOLO
+from utils import find_model_path
 import random
 import os
 
-
-
-model_path =r"E:\savor_vision\Savor_training\mvp_run\weights\best.pt"
-
-if not os.listdir(model_path):
-    model_path =r"C:\savor_vision\Savor_training\mvp_run\weights\best.pt"
-
+model_path = find_model_path()
 model = YOLO(model_path)
 
 image_folder = r"E:\Savor_Vision\dataset\train\images"
