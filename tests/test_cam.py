@@ -1,5 +1,5 @@
 from ultralytics import YOLO
-from utils import find_model_path()
+from utils import find_model_path
 import os
 import cv2
 

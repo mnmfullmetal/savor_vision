@@ -1,6 +1,5 @@
 from ultralytics import YOLO
-from tests.utils import find_data_path
-import os
+from .tests.utils import find_data_path
 
 def main():
     

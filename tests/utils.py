@@ -15,7 +15,6 @@ def find_data_path():
 
 
 def find_model_path():
-    
     possible_model_paths = [
         r"C:\Users\Myles\source\repos\savor_vision\Savor_training\mvp_run_22\weights\best.pt",
         r"E:\savor_vision\Savor_training\mvp_run_22\weights\best.pt"
