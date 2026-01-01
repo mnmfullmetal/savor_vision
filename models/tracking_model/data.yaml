@@ -1,0 +1,14 @@
+path: C:/Users/Myles/source/repos/savor_vision/models/tracking_model/data
+train: train/images
+val: valid/images  
+test: test/images
+
+nc: 3
+names: ['nestle_milo_tin', 'twinings_greentea_box', 'woolworths_salt_bottle']
+
+roboflow:
+  workspace: savorvision-v0kkr
+  project: mvp_track
+  version: 5
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/savorvision-v0kkr/mvp_track/dataset/5

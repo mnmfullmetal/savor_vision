@@ -1,27 +1,19 @@
 import os   
 
-def find_data_path():
-    possible_data_paths = [
-        r"C:\Users\Myles\source\repos\savor_vision\dataset\data.yaml",
-        r"E:\savor_vision\Savor_training\dataset\data.yaml"
+def get_model_path(model, version):
+    """
+    Dynamically locates a model based on type and version.
+    """
+    base_dirs = [
+        r"C:\Users\Myles\source\repos\savor_vision\models",
+        r"E:\savor_vision\Savor_training"
     ]
 
-    for path in possible_data_paths:
-        if os.path.exists(path):
-            return path
+    for base in base_dirs:
+        potential_path = os.path.join(base, model, version, "weights", "best.pt")
+        
+        if os.path.exists(potential_path):
+            return potential_path
 
-    raise FileNotFoundError("Error: Data path not found in any known location.")
+    raise FileNotFoundError(f"ERROR: Could not find {model} ({version}) in known locations.")
 
-
-
-def find_model_path():
-    possible_model_paths = [
-        r"C:\Users\Myles\source\repos\savor_vision\Savor_training\mvp_run_22\weights\best.pt",
-        r"E:\savor_vision\Savor_training\mvp_run_22\weights\best.pt"
-    ]
-
-    for path in possible_model_paths:
-        if os.path.exists(path):
-            return path
-
-    raise FileNotFoundError("Error: Model path not found in any known location.")
