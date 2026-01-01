@@ -1,1 +1,30 @@
-__pycache__
+# DATA & DATASETS
+raw_data/
+raw_videos/
+models/tracking_model/data/
+model/tracking_model/track_v1
+models/audit_model/audit_v1
+models/audit_model/data/
+runs/detect/
+
+# PYTHON
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.env
+
+# AI MODELS & WEIGHTS 
+*.pt
+*.onnx
+*.engine
+*.hef
+runs/
+
+# OS SPECIFIC
+.DS_Store
+Thumbs.db
+
+*.jpg
+*.jpeg
+*.png
