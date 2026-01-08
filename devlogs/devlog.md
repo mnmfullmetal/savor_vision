@@ -112,7 +112,7 @@ Continue to test and perfect each model at their respective tasks before moving 
 * **Outcome:** Reorganising the project resulted in no loss of data and provided me with an organised and decoupled development environment ready for migration to the Raspi5.
 
 ## 4. Summary of Milestone
-While I started out attempting to create and perfect a dual-brain system, with the new information that both segmentation and tracking can be done by the same model I believe now that is the best course of action. Not only that, I have opted for migrating from using YOLOv8 to YOLOv11 for more its more advanced capabilties.
+While I started out attempting to create and perfect a dual-brain system, with the new information that both segmentation and tracking can be done by the same model I believe now that is the best course of action. Not only that, I have opted to migrate from YOLOv8 to YOLOv11 for its more advanced segmentation an tracking capabilties. 
 
 ## 5. Next Steps
 To train a new model (`yolov11s-seg`) to handle both instance segmentation and object tracking. 
@@ -131,15 +131,15 @@ To train a new model (`yolov11s-seg`) to handle both instance segmentation and o
 **Toolchain:** Roboflow (Annotation & Dataset Creation), OpenCV (Frame manipulation), Python 3.10 (Logic)
 
 ## 1. Project Evolution
-**Change:** 
-**Why:** 
+**Change:** Migration from a dual brain system back to a single brain system that is smarter and more well equipped (can perform instance segmentation and object tracking simultaneously) than the previous iterations 
+**Why:** I need the model to be able to segment a crowded scene for accurate results in a static image aswell as accurately track and ID moving items through the pantry. Doing this with one brain, that happens to be smarter, not only saves digital space for other add-ons, but computing power aswell.
 
 ## 2. Developmental Phases
-### Phase I: Project Structure Reformation (Modular Hierarchy)
-* **Why:** 
-* **Desired Outcome:** 
-* **Result & Pivot:** 
-### Phase II: Perfecting the Brains
+### Phase I: HEF Compilation Test.
+* **Why:** Moving to YOLOv11 ( specifically `yolov11s-seg`), while ultimately worthwhile, comes with its own set of unique challenges. The largest one is that currently Hailo (the NPU handling the computer vision model) do not have official support for `yolov11s-seg`, compilation to HEF (Hailo Executable Format) through offical channels or means is not possible at this time and so I have compiled a list of ways to circumvent this issue. I have opted to do this before moving forward with YOLOv11 in order to ensure I dont waste time training and developing a model I ultimately will not be able to use with my desired hardware (Raspi5 8GB and Hailo-8 26TOPS NPU).
+* **Desired Outcome:** Successful compilation of **.onnx** file to **.hef** for YOLOv11 model so that it can be used with my Hailo-8 NPU.
+* **Result & Pivot:** Pivot required. Using `Halo Dataflow Compiler 3.33`, I attempted to compile the ONNX file to HEF in various different ways, to no avail. The issue was the lack offical support by Hailo for the YOLOv11 segmentation models, causing errors at nearly every stage of compilation through the `Hailo Dataflow Compiler` (Hailo DFC). I learned through the offcial Hailo forums that the way forward was manipulation of the model end nodes, combined with an .alls script, to change the model shape and size in order to compile to HEF and map the model to the virtually simulated instance of the Hailo-8 chip, instanced by the Hailo DFC.
+### Phase II: 
 * **Why:**
 * **Desired Outcome:** 
 * **Result & Pivot:** 
