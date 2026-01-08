@@ -2,7 +2,7 @@ from ultralytics import YOLO
 import os 
 
 def main():
-    model = YOLO('yolov11s-seg.pt')
+    model = YOLO('yolo11s-seg.pt')
     data_path = os.path.join(os.getcwd(), "amodal_model", "data.yaml")
 
     results = model.train(
@@ -11,8 +11,8 @@ def main():
         imgsz=640,
         device=0,          
         project="amodal_model",
-        name="amodal_v1",
-        batch=8,           
+        name="amodal_v2",
+        batch=16,           
         mask_ratio=4,       
         overlap_mask=False, 
         mixup=0.0,          
@@ -22,12 +22,17 @@ def main():
         exist_ok=True       
     )
 
-    best_model = YOLO(os.path.join(os.getcwd(), "amodal_model", "amodal_v1", "weights", "best.pt"))
+    print("training complete, getting best.pt")
 
-    best_model.export(format="onnx", opset=12, nms=False, simplfy=True, dynamic=False)
+    best_model = YOLO(os.path.join(os.getcwd(), "amodal_model", "amodal_v2", "weights", "best.pt"))
+
+    print("training complete, getting best.pt")
 
 
-if __name__ == "main":
+    best_model.export(format="onnx", opset=12, nms=False, simplify=True, dynamic=False)
+
+
+if __name__ == "__main__":
     main()
 
     

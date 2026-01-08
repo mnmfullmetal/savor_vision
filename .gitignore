@@ -1,6 +1,8 @@
 # DATA & DATASETS
 raw_data/
 raw_videos/
+models/amodal_model/data
+models/amodal_model/amodal_v1
 models/tracking_model/data/
 model/tracking_model/track_v1
 models/audit_model/audit_v1
