@@ -1,4 +1,4 @@
-path: C:/Users/Myles/source/repos/savor_vision/models/amodal_model/data
+path: E:\savor_vision\models\amodal_model\data
 train: train/images
 val: valid/images  
 test: test/images
