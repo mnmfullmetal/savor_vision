@@ -5,7 +5,7 @@ from utils import get_model_path
 import math
 import time
 
-MODEL_PATH = get_model_path(model="tracking_model", version="track_v1") # get model path
+MODEL_PATH = get_model_path(model="amodal_model", version="amodal_v1") # get model path
 PERSISTENCE_THRESHOLD = 10 # amount of frames an item has to be detected before it is considered 
 DROPOUT_THRESHOLD = 60 # amount of frames a tracked item can be "lost" and be considered in limbo (neither there nor gone) 
 MOVEMENT_THRESHOLD = 5 # distance in pixels an object can move before being considered "moving" 
