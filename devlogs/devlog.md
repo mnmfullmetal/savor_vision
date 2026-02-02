@@ -105,17 +105,17 @@ Continue to test and perfect each model at their respective tasks before moving 
 ### Phase II: Perfecting the Brains
 * **Why:** To solve the minor tracking issues identified in Phase III of Dev Log #02.
 * **Desired Outcome:** Optimised models for both the Watcher and the Accountant so that they don't lose confidence when the items are at weird angles or when they are moving to fast.
-* **Result & Pivot:** Pivot, not due to it being required, but because I found additional information that changes my approach completely. While I was looking through the documentation for `ultralytics` I found "Instance Segementation WITH Object Tracking", capabilities of both the Watcher and the Accountant in the 1 model instead of 2 seperate ones. While this could be done with `yolov8s-seg`, my research has convinced me to make the largest pivot yet and move to `yolov11s-seg` for this unified brain, providing faster and more advanced segmentation and spatial tracking capabilities. 
+* **Result & Pivot:** Pivot, not due to it being required, but because I found additional information that changes my approach completely. While I was looking through the documentation for `ultralytics` I found "Instance Segementation WITH Object Tracking", capabilities of both the Watcher and the Accountant in the 1 model instead of 2 seperate ones. While this could be done with `yolov8s-seg`, my research has convinced me to make the largest pivot yet and move to `yolo11s-seg` for this unified brain, providing faster and more advanced segmentation and spatial tracking capabilities. 
 
 ## 3. Challenges Faced and Outcomes
-* **Challenge:"** Reorganising the project structure cleanly and safely.
+* **Challenge:** Reorganising the project structure cleanly and safely.
 * **Outcome:** Reorganising the project resulted in no loss of data and provided me with an organised and decoupled development environment ready for migration to the Raspi5.
 
 ## 4. Summary of Milestone
 While I started out attempting to create and perfect a dual-brain system, with the new information that both segmentation and tracking can be done by the same model I believe now that is the best course of action. Not only that, I have opted to migrate from YOLOv8 to YOLOv11 for its more advanced segmentation an tracking capabilties. 
 
 ## 5. Next Steps
-To train a new model (`yolov11s-seg`) to handle both instance segmentation and object tracking. 
+To train a new model (`yolo11s-seg`) to handle both instance segmentation and object tracking. 
 
 
 
@@ -127,7 +127,7 @@ To train a new model (`yolov11s-seg`) to handle both instance segmentation and o
 # Savor Vision Dev Log #04
 **Project Name:** Savor - Vision
 **Current Milestone:** Single-Brain, Dual Logic System / HEF File Compilation
-**Primary Engine:** YOLOv11 (Hardware Target: PC Development for Raspberry Pi 5 Deployment w/ Hailo-8 AI Hat+) 
+**Primary Engine:** YOLOv8 (Hardware Target: PC Development for Raspberry Pi 5 Deployment w/ Hailo-8 AI Hat+) 
 **Toolchain:** Roboflow (Annotation & Dataset Creation), OpenCV (Frame manipulation), Python 3.10 (Logic)
 
 ## 1. Project Evolution
@@ -135,19 +135,35 @@ To train a new model (`yolov11s-seg`) to handle both instance segmentation and o
 **Why:** I need the model to be able to segment a crowded scene for accurate results in a static image aswell as accurately track and ID moving items through the pantry. Doing this with one brain, that happens to be smarter, not only saves digital space for other add-ons, but computing power aswell.
 
 ## 2. Developmental Phases
-### Phase I: HEF Compilation Test.
-* **Why:** Moving to YOLOv11 ( specifically `yolov11s-seg`), while ultimately worthwhile, comes with its own set of unique challenges. The largest one is that currently Hailo (the NPU handling the computer vision model) do not have official support for `yolov11s-seg`, compilation to HEF (Hailo Executable Format) through offical channels or means is not possible at this time and so I have compiled a list of ways to circumvent this issue. I have opted to do this before moving forward with YOLOv11 in order to ensure I dont waste time training and developing a model I ultimately will not be able to use with my desired hardware (Raspi5 8GB and Hailo-8 26TOPS NPU).
+### Phase I: HEF Compilation Test
+* **Why:** Moving to YOLOv11 ( specifically `yolo11s-seg`), while I believe ultimately worthwhile, comes with its own set of unique challenges. The largest one is that currently Hailo (the NPU handling the computer vision model) do not have official support for `yolo11s-seg`. Compilation to HEF (Hailo Executable Format) through offical channels or means is not possible at this time and so I have compiled a list of ways to circumvent this issue. I have opted to do this before moving forward with YOLOv11 in order to ensure I dont waste time training and developing a model I ultimately will not be able to use with my desired hardware (Raspi5 8GB and Hailo-8 26TOPS NPU).
 * **Desired Outcome:** Successful compilation of **.onnx** file to **.hef** for YOLOv11 model so that it can be used with my Hailo-8 NPU.
-* **Result & Pivot:** Pivot required. Using `Halo Dataflow Compiler 3.33`, I attempted to compile the ONNX file to HEF in various different ways, to no avail. The issue was the lack offical support by Hailo for the YOLOv11 segmentation models, causing errors at nearly every stage of compilation through the `Hailo Dataflow Compiler` (Hailo DFC). I learned through the offcial Hailo forums that the way forward was manipulation of the model end nodes, combined with an .alls script, to change the model shape and size in order to compile to HEF and map the model to the virtually simulated instance of the Hailo-8 chip, instanced by the Hailo DFC.
-### Phase II: 
-* **Why:**
-* **Desired Outcome:** 
-* **Result & Pivot:** 
+* **Result & Pivot:** Pivot required. Using `Halo Dataflow Compiler 3.33`, I attempted to compile the ONNX file to HEF in various different ways, at first to no avail, but when I did it was "hacky". The issue was the lack offical support by Hailo for the YOLOv11 segmentation models, causing errors at nearly every stage of compilation through the `Hailo Dataflow Compiler` (Hailo DFC). I learned through the offcial Hailo forums that the way forward was manipulation of the model end nodes, combined with an .alls script, to change the model shape and size in order to compile to HEF and map the model to the virtually simulated instance of the Hailo-8 chip, instanced by the Hailo DFC. I had to manually "decapitate" the model—removing the post-processing headers that the NPU couldn't handle. For YOLOv11, this was exceptionally difficult due to complex graph structures and lack of documentation. I had to utilize **Netron** to visually inspect the ONNX graph and write a custom script, `inspect_onnx.py`, to hunt down the specific end nodes required for the compiler to accept the model. After many tries I did sucessfully manage to compile and map a nano YOLOv11 model (`yolo11n-seg`) to **.hef**, but to do the mapping required removing all the functionality that came with it and `HailoRT` did not have official support for YOLO11 segmentation models, meaning I would have to write all the post-processing logic from scratch myself. I had to start to ask myself if all this trouble was worth the accuracy boosts that may come with yolov11 vs the complexity and latency issues that trying to compile the yolov11 model to the NPU would bring, and the answer was clear. YOLOv11 would have given me roughly a 2%-3% boost in accuracy *theoretically*. In practice, when using YOLOv11 on this hardware the accuracry would be worse! Due to the increase in latency, the FPS would drop and that would cause accuracy problem with the tracking part of the model. I had to pivot back to YOLOv8 with its native support which ironically should provide better accuracy for tracking anyways because of the increase in fps, negating the minimal increase I would get from trying to compile the v11 model using the hacks I discovered.
+
+### Phase II: HEF Compilation (The YOLOv8 Solution) 
+* **Why:** Having pivoted back to YOLOv8, the immediate requirement was to prove that I could actually compile this version to the Hailo Executable Format (**.hef**) and restore the functionality I had to remove to make it compatible with the NPU. Without this proof of concept, the entire hardware roadmap was at risk.
+* **Desired Outcome:** A working `.hef` file for `yolov8s-seg` and a confirmation that post-processing can be handled off-chip.
+* **Result & Pivot:** Success! Because YOLOv8 is natively supported by the community finding the correct end-nodes to prune was significantly easier than with v11, and I successfully compiled the model to `.hef`.  I also verified that the post-processing functionality (Non-Maximum Suppression and decoding) that I removed from the model to map it to the NPU, can be seamlessly re-acquired on the Raspberry Pi using pre-written C++ code provided via `HailoRT` (Hailo Runtime). This validates the entire pipeline: The NPU handles the heavy matrix math, and the CPU handles the final decoding.
+
+### Phase III: Conceptualising The "Doorman" Architecture (Generic Detection vs. Specific ID)
+* **Why:** With the hardware pipeline validated, I needed to solve the "New Item" problem. I realised that a closed-set model (one trained on specific brands like "Milo" or "Heinz") is not viable because I cannot retrain the AI every time I buy a new brand of sauce. I need a system that tracks *anything* but identifies *specifics*.
+* **Desired Outcome:** A software architecture that allows for "Generic Tracking" paired with "Specific Identification" without constant retraining or high-friction manual entry.
+* **Result & Pivot:** Success! I realised my previous "Dual Brain" concept (Tracker vs. Auditor) was flawed. The new "Dual Brain" is **Detection vs. Identification**, utilizing a "Big Brother" ceiling camera and a detailed "Pantry Eye."
+    1.  **Brain 1 (The Doorman / Ceiling Cam):** A Generic YOLOv8 model running on the NPU via the ceiling camera. It detects 5 broad classes: `Can`, `Jar`, `Bottle`, `Box`, `Packet`. It handles the heavy lifting of segmentation and tracking items through the room, maintaining a "Limbo State" for items that leave the pantry but haven't entered the bin (giving them a 12-hour window to return before being marked as consumed).
+    2.  **Brain 2 (The Identifier / Pantry Cam):** A high-detail camera mounted inside the pantry door that sleeps until the door opens.
+        * **For New Items:** The user scans the barcode on this camera. This instantly adds the product to the database and simultaneously captures its visual signature (Aspect Ratio $\rightarrow$ HSV Color $\rightarrow$ ORB Texture).
+        * **For Existing Items:** As an item is placed in or taken out, this camera passively verifies the visual signature against the barcode data it already knows.
+    
+    This layering allows the system to automate the process completely. The ceiling cam tracks the generic *movement* of a "Can," while the pantry cam provides the specific *identity* ("Heinz Beans") via barcode or visual re-identification.
 
 ## 3. Challenges Faced and Outcomes
-* **Challenge:"** 
-* **Outcome:** 
+* **Challenge:** Mapping unsupported neural network layers to a specific NPU architecture.
+* **Outcome:** I learned how to use Netron to visualise ONNX graphs and identify incompatible layers. Ultimately, this taught me the value of hardware-native support (YOLOv8) over cutting-edge novelty (YOLOv11) in embedded systems.
+* **Challenge:** Designing an inventory system that accommodates new products without retraining.
+* **Outcome:** Developed the "Doorman" architecture. By splitting the workload into "Generic Detection" (NPU) and "Specific Identification" (CPU Logic + Barcodes), I can add new items to the system instantly by simply scanning them at the pantry door, rather than retraining the neural network.
 
 ## 4. Summary of Milestone
+I have successfully compiled a working `yolov8s-seg` model to the Hailo Executable Format (.hef), validating the hardware pipeline. Furthermore, I have finalized the software architecture: a generic "Doorman" model that tracks broad object categories, paired with a secondary logic layer (Ratio/HSV/ORB) and barcode integration for specific item identification and automated enrollment.
 
 ## 5. Next Steps
+Create a new **Generic Dataset** consisting of the 5 core classes (`Can`, `Jar`, `Bottle`, `Box`, `Packet`) and train the Savor:Vision model to recognize these shapes robustly.
